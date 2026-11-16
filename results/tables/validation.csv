@@ -1,0 +1,5 @@
+comparison,status,product_id,acquisition_date,offset_days,s1_threshold_dB,s1_water_km2,iou,f1,precision,recall,accuracy,notes
+Headline_vs_S1,blocked,S1D_IW_GRDH_1SDV_20260725T120434_20260725T120459_003830_006E63_520C,2026-07-25,1,N/A,N/A,N/A,N/A,N/A,N/A,N/A,blocked: SNAP not available
+Core_vs_S1,blocked,S1D_IW_GRDH_1SDV_20260725T120434_20260725T120459_003830_006E63_520C,2026-07-25,1,N/A,N/A,N/A,N/A,N/A,N/A,N/A,blocked: SNAP not available
+Permanent_Water,blocked,S1D_IW_GRDH_1SDV_20260725T120434_20260725T120459_003830_006E63_520C,2026-07-25,1,N/A,N/A,N/A,N/A,N/A,N/A,N/A,blocked: SNAP not available
+Shifted_Null,blocked,S1D_IW_GRDH_1SDV_20260725T120434_20260725T120459_003830_006E63_520C,2026-07-25,1,N/A,N/A,N/A,N/A,N/A,N/A,N/A,blocked: SNAP not available

@@ -1,0 +1,2 @@
+threshold_HH_dB,threshold_HV_dB,baseline_core_px,baseline_core_km2,baseline_core_pct,observed_core_px,observed_core_km2,observed_core_pct,new_core_px,new_core_km2,new_core_pct,receded_core_px,receded_core_km2,receded_core_pct,net_core_change_px,net_core_change_km2,net_core_change_pct
+-20.0,-23.0,71045,28.42,1.92,69496,27.8,1.88,5719,2.29,0.15,7268,2.91,0.2,-1549,-0.62,-0.04

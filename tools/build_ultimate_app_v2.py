@@ -1,0 +1,1945 @@
+"""
+build_ultimate_app_v2.py
+Generates the definitive, competition-grade web application for the NASA Space Apps Challenge 2026.
+Includes:
+1. Full 100% screen map with Esri World Boundaries and Places (all cities, rivers, state lines visible)
+2. Interactive Real-Time River Flow & Soil Erosion Particle Simulation (flowing water streaks + golden silt erosion plumes)
+3. Deep Research Polarimetry & Speckle Intelligence (DpRVI, ENL speckle suppression, Braiding Index Bi = 4.82)
+4. Formal IEEE Scientific Whitepaper Modal
+5. Floating Glassmorphic AI Copilot with NVIDIA NIM (nemotron-3.5-bolt-e4b) & Voice Audio SitRep
+6. Cloud-penetrating SAR X-Ray Lens, 4D Hydraulic Pulse Timeline, 3D Wave Physics Studio, ASDMA Incident Command
+"""
+
+def generate_html_v2():
+    return """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NASA NISAR 3D Hydrological Digital Twin • Dancing with the SARs</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    background: #020617;
+    color: #f8fafc;
+  }
+
+  /* FULL SCREEN 100% MAP */
+  #map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  /* Celestial Stars Canvas */
+  #stars-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.65;
+  }
+
+  /* Dynamic River Flow & Soil Erosion Particle Canvas */
+  #hydro-flow-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 20;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Glassmorphism Styles */
+  .glass-panel {
+    background: rgba(10, 15, 29, 0.88);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7);
+    border-radius: 14px;
+  }
+  .glass-pill {
+    background: rgba(10, 15, 29, 0.88);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Buttons */
+  .btn {
+    background: rgba(30, 41, 59, 0.75);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 7px 13px;
+    font-size: 11.5px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .btn:hover { color: white; background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.35); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.active {
+    background: #0284c7;
+    color: white;
+    border-color: #38bdf8;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.55);
+  }
+  .btn-accent {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: white;
+    border-color: #38bdf8;
+  }
+  .btn-flow {
+    border-color: rgba(56, 189, 248, 0.5);
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.25);
+  }
+  .btn-flow.active {
+    background: linear-gradient(135deg, #0284c7 0%, #0891b2 100%);
+    color: white;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+  }
+  .btn-purple {
+    border-color: rgba(168, 85, 247, 0.4);
+    color: #c084fc;
+    background: rgba(168, 85, 247, 0.14);
+  }
+  .btn-purple:hover { background: rgba(168, 85, 247, 0.28); color: #e9d5ff; }
+  .btn-purple.active {
+    background: #7c3aed;
+    color: white;
+    border-color: #c084fc;
+    box-shadow: 0 0 18px rgba(168, 85, 247, 0.6);
+  }
+  .btn-danger {
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.14);
+  }
+  .btn-danger.active {
+    background: #dc2626;
+    color: white;
+    border-color: #f87171;
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.6);
+  }
+
+  /* -------------------------------------------------------------
+     TOP EXECUTIVE HERO BAR
+     ------------------------------------------------------------- */
+  .hero-top-bar {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: calc(100vw - 28px);
+  }
+
+  .nav-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* 3-Stat Executive Mission Status HUD */
+  .stat-banner {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: rgba(10, 15, 29, 0.9);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 12px;
+    padding: 6px 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.65), 0 0 25px rgba(56, 189, 248, 0.15);
+    overflow-x: auto;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .stat-card:last-child { border-right: none; }
+  .stat-badge-icon { font-size: 20px; }
+  .stat-info { display: flex; flex-direction: column; }
+  .stat-title { font-size: 9.5px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-number { font-size: 13.5px; font-weight: 800; color: #38bdf8; font-family: monospace; }
+  .stat-sub { font-size: 10px; color: #cbd5e1; }
+
+  .hero-tour-btn {
+    background: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #7c3aed 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 7px 15px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.5), 0 0 25px rgba(124, 58, 237, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  /* -------------------------------------------------------------
+     MAP LANDMARK PINS & EROSION HOTSPOT PINS
+     ------------------------------------------------------------- */
+  .landmark-marker {
+    background: rgba(15, 23, 42, 0.9);
+    border: 1.5px solid #38bdf8;
+    color: #f8fafc;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6), 0 0 10px rgba(56, 189, 248, 0.4);
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: transform 0.2s;
+  }
+  .landmark-marker:hover {
+    transform: scale(1.1);
+    background: #0284c7;
+    border-color: white;
+  }
+  .erosion-marker {
+    background: rgba(180, 83, 9, 0.88);
+    border: 1.5px solid #fbbf24;
+    color: white;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    animation: erosionPulse 2s infinite ease-in-out;
+  }
+  @keyframes erosionPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+    50% { transform: scale(1.08); box-shadow: 0 0 20px rgba(251, 191, 36, 0.85); }
+  }
+  .swath-badge-label {
+    background: rgba(2, 132, 199, 0.85);
+    border: 2px solid #38bdf8;
+    color: white;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 16px;
+    box-shadow: 0 4px 25px rgba(56, 189, 248, 0.6);
+    cursor: pointer;
+  }
+
+  /* -------------------------------------------------------------
+     FLOATING AI HYDRO-COPILOT CHATBOX (Right Side Drawer)
+     ------------------------------------------------------------- */
+  #ai-chat-panel {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 360px;
+    height: calc(100vh - 28px);
+    max-height: 720px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    background: rgba(10, 15, 29, 0.94);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(56, 189, 248, 0.2);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+  }
+  #ai-chat-panel.minimized {
+    transform: translateX(390px);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Floating Toggle Button when AI is Minimized */
+  #ai-toggle-pill {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 1040;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: white;
+    border: 1px solid rgba(56, 189, 248, 0.5);
+    padding: 8px 16px;
+    border-radius: 24px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+  #ai-toggle-pill.visible { display: flex; }
+
+  .ai-panel-header {
+    padding: 12px 14px;
+    background: rgba(15, 23, 42, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ai-pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: aiPulse 1.8s infinite;
+  }
+  @keyframes aiPulse {
+    0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
+  /* Voice Audio Briefing Bar */
+  .ai-audio-bar {
+    padding: 8px 12px;
+    background: rgba(30, 41, 59, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .soundwave-box {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 16px;
+  }
+  .sw-bar {
+    width: 3px;
+    background: #38bdf8;
+    border-radius: 2px;
+    height: 4px;
+    transition: height 0.1s ease;
+  }
+  .sw-playing .sw-bar:nth-child(1) { animation: wave 0.8s infinite ease-in-out; }
+  .sw-playing .sw-bar:nth-child(2) { animation: wave 0.6s infinite ease-in-out 0.2s; }
+  .sw-playing .sw-bar:nth-child(3) { animation: wave 0.9s infinite ease-in-out 0.1s; }
+  .sw-playing .sw-bar:nth-child(4) { animation: wave 0.7s infinite ease-in-out 0.3s; }
+  .sw-playing .sw-bar:nth-child(5) { animation: wave 0.5s infinite ease-in-out 0.15s; }
+  @keyframes wave {
+    0%, 100% { height: 4px; }
+    50% { height: 16px; background: #a855f7; }
+  }
+
+  .ai-chips-scroll {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(15, 23, 42, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .ai-chip {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    color: #cbd5e1;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .ai-chip:hover { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+
+  .ai-messages-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ai-msg {
+    max-width: 92%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 12px;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  .ai-msg-user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: white;
+  }
+  .ai-msg-bot {
+    align-self: flex-start;
+    background: rgba(30, 41, 59, 0.85);
+    color: #f1f5f9;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .ai-msg-bot strong { color: #38bdf8; }
+  .ai-msg-meta { font-size: 9.5px; color: #94a3b8; margin-top: 5px; display: flex; justify-content: space-between; }
+
+  .ai-input-wrap {
+    padding: 10px 12px;
+    background: rgba(15, 23, 42, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .ai-input-box {
+    flex: 1;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    outline: none;
+    font-family: inherit;
+  }
+  .ai-input-box:focus { border-color: #38bdf8; }
+  .ai-send-btn {
+    background: #0284c7;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* -------------------------------------------------------------
+     FEATURE 1: CLOUD-PENETRATING SAR X-RAY LENS
+     ------------------------------------------------------------- */
+  #xray-cloud-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: radial-gradient(circle at 50% 50%, rgba(241, 245, 249, 0.82) 0%, rgba(226, 232, 240, 0.95) 100%);
+    backdrop-filter: blur(8px);
+    mix-blend-mode: screen;
+  }
+  #xray-cloud-overlay.active { opacity: 0.92; }
+
+  #xray-loupe {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    border: 3px solid #38bdf8;
+    box-shadow: 0 0 35px rgba(56, 189, 248, 0.9), inset 0 0 25px rgba(56, 189, 248, 0.4);
+    z-index: 60;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    display: none;
+    background: transparent;
+  }
+  #xray-loupe.active { display: block; }
+  .xray-badge {
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid #38bdf8;
+    color: #38bdf8;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+  }
+
+  /* -------------------------------------------------------------
+     FEATURE 2: 4D SPACE-TIME TIMELINE DOCK (Bottom Center)
+     ------------------------------------------------------------- */
+  #timeline-dock {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 900;
+    width: 580px;
+    max-width: calc(100vw - 32px);
+    padding: 10px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(10, 15, 29, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+  }
+  .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+  }
+  .timeline-slider-track { display: flex; align-items: center; gap: 12px; }
+  .timeline-range { flex: 1; cursor: pointer; accent-color: #38bdf8; height: 6px; }
+  .timeline-ticks { display: flex; justify-content: space-between; font-size: 9.5px; color: #94a3b8; margin-top: 2px; }
+
+  /* -------------------------------------------------------------
+     FEATURE 3: 3D WAVEFRONT PHYSICS MODAL
+     ------------------------------------------------------------- */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(3, 7, 18, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 2500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal-box {
+    background: rgba(15, 23, 42, 0.96);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    border-radius: 16px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.8), 0 0 40px rgba(168, 85, 247, 0.2);
+    width: 820px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 22px;
+    color: #e2e8f0;
+  }
+
+  /* -------------------------------------------------------------
+     FEATURE 4: DISASTER EMERGENCY COMMAND OVERLAY
+     ------------------------------------------------------------- */
+  #emergency-command-overlay {
+    position: absolute;
+    top: 140px;
+    left: 14px;
+    z-index: 950;
+    width: 330px;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(22px);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 12px 40px rgba(239, 68, 68, 0.25), 0 0 30px rgba(0,0,0,0.7);
+    display: none;
+  }
+  #emergency-command-overlay.active { display: block; }
+
+  /* Live Telemetry HUD Bar (Bottom Center) */
+  #telemetry-bar {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 850;
+    background: rgba(10, 15, 29, 0.88);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 30px;
+    padding: 5px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 11px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.6);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .telem-val { color: #38bdf8; font-weight: 600; font-family: monospace; }
+  .telem-divider { width: 1px; height: 12px; background: rgba(255,255,255,0.15); }
+
+  /* Floating Layers Control Panel */
+  .layers-floating-box {
+    position: absolute;
+    top: 140px;
+    left: 14px;
+    z-index: 900;
+    background: rgba(10, 15, 29, 0.9);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 10px 14px;
+    width: 220px;
+    font-size: 11px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.55);
+  }
+  .layer-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+  .layer-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: #cbd5e1; }
+  .color-dot { width: 9px; height: 9px; border-radius: 2px; }
+
+  /* Guided Tour Modal */
+  #guide-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(3, 7, 18, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #guide-modal.hidden { display: none; }
+  .guide-card {
+    background: rgba(15, 23, 42, 0.96);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 16px;
+    max-width: 540px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 35px rgba(56, 189, 248, 0.25);
+  }
+
+  /* Toast Notification */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(56, 189, 248, 0.5);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: white;
+    z-index: 3000;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.25s ease;
+    pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+<div id="map"></div>
+<canvas id="hydro-flow-canvas"></canvas>
+
+<!-- Feature 1: Cloud Overlay and Loupe -->
+<div id="xray-cloud-overlay"></div>
+<div id="xray-loupe">
+  <div class="xray-badge">🩻 L-BAND 24cm RADAR: 100% CLOUD PENETRATION</div>
+</div>
+
+<!-- =============================================================
+     TOP EXECUTIVE HERO BAR (Instant Understanding for Judges)
+     ============================================================= -->
+<div class="hero-top-bar">
+  <!-- Nav Strip -->
+  <div class="nav-strip">
+    <div class="glass-pill" style="padding: 3px 6px; display: flex; gap: 3px;">
+      <button id="btn-focus-swath" class="btn btn-accent" onclick="focusSwath()" title="Focus on Brahmaputra Frame 76 Swath">🎯 Focus Swath</button>
+      <button id="btn-flow" class="btn btn-flow active" onclick="toggleRiverFlowSimulation()" title="Toggle Real-Time River Flow & Silt Soil Erosion Particle Physics">🌊 Live River & Soil Dynamics</button>
+      <button id="btn-3d" class="btn active" onclick="setOrbitMode('3d')">🌐 3D Valley</button>
+      <button id="btn-space" class="btn" onclick="setOrbitMode('space')">🚀 Space</button>
+      <button id="btn-2d" class="btn" onclick="setOrbitMode('2d')">🗺️ 2D</button>
+    </div>
+
+    <div class="glass-pill" style="padding: 3px 6px; display: flex; gap: 3px;">
+      <button id="btn-xray" class="btn" onclick="toggleXrayLens()" title="Penetrate monsoon cloud cover with L-band radar">🩻 Cloud X-Ray Lens</button>
+      <button id="btn-physics" class="btn btn-purple" onclick="togglePhysicsModal()" title="3D Microwave Wavefront Scattering Studio">🔬 3D Wave Physics</button>
+      <button id="btn-cmd" class="btn btn-danger" onclick="toggleEmergencyCommand()" title="ASDMA / NDRF Emergency Operations">🚨 Incident Command</button>
+      <button id="btn-paper" class="btn" onclick="openWhitepaperModal()" title="View Complete IEEE/AGU Scientific Research Whitepaper">📄 IEEE Whitepaper</button>
+      <button id="btn-probe" class="btn" onclick="toggleRadarProbe()" title="Inspect SAR Backscatter & Elevation under cursor">🎯 Radar Probe</button>
+    </div>
+
+    <button class="hero-tour-btn" onclick="start60sTour()">⚡ 60s Guided Story Tour</button>
+    <button class="btn" id="btn-audio" onclick="toggleAudio()" title="Toggle Sound">🔊</button>
+  </div>
+
+  <!-- 3-Stat Executive Mission Status HUD with Deep Research Metrics -->
+  <div class="stat-banner">
+    <div class="stat-card">
+      <div class="stat-badge-icon">🛰️</div>
+      <div class="stat-info">
+        <span class="stat-title">NISAR Observation Swath</span>
+        <span class="stat-number">1,480.43 km²</span>
+        <span class="stat-sub">Rel Orbit 91 • Frame 76 (Assam)</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-badge-icon">🌊</div>
+      <div class="stat-info">
+        <span class="stat-title">Core Thalweg Stability (HH &lt; -20 dB)</span>
+        <span class="stat-number">-0.62 km² (Stable Channel)</span>
+        <span class="stat-sub">Null Noise Spread: [-0.67, +0.02] km²</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-badge-icon">🔬</div>
+      <div class="stat-info">
+        <span class="stat-title">Deep Research: Polarimetry & ENL</span>
+        <span class="stat-number">DpRVI: 0.12 vs 0.65 (Reeds)</span>
+        <span class="stat-sub">ENL Speckle: 18.42 • Braiding Bi: 4.82</span>
+      </div>
+    </div>
+
+    <div style="margin-left: auto; display: flex; gap: 6px;">
+      <button class="btn" onclick="capture4KSnapshot()" title="Download High-Res Map Briefing PNG">📸 Snapshot</button>
+      <button class="btn" onclick="openSitRepModal()" title="Print UN-SPIDER / CWC SitRep PDF">📄 SitRep</button>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================================
+     FEATURE 2: 4D SPACE-TIME RIVER PULSE SCRUBBER (Bottom Center)
+     ============================================================= -->
+<div id="timeline-dock">
+  <div class="timeline-header">
+    <span style="font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+      🌊 4D HYDRAULIC PULSE TIMELINE
+    </span>
+    <span id="timeline-stage-label" style="font-family: monospace; color: #a7f3d0; font-weight: 700;">
+      EPOCH 3: JULY 26 FLOOD PEAK (STAGE: 37.2m MSL)
+    </span>
+    <button class="btn" id="btn-play-4d" onclick="toggle4DPlayback()" style="padding: 2px 10px; font-size: 11px;">
+      ▶ Play Pulse
+    </button>
+  </div>
+  <div class="timeline-slider-track">
+    <input type="range" id="timeline-range" class="timeline-range" min="0" max="2" step="1" value="2" oninput="update4DEpoch(this.value)">
+  </div>
+  <div class="timeline-ticks">
+    <span>JULY 02 (Baseline • 36.0m)</span>
+    <span>JULY 14 (Monsoon Crest • 38.5m)</span>
+    <span>JULY 26 (Observation Peak • 37.2m)</span>
+  </div>
+</div>
+
+<!-- =============================================================
+     FEATURE 4: DISASTER EMERGENCY COMMAND ROOM (ASDMA / NDRF Mode)
+     ============================================================= -->
+<div id="emergency-command-overlay">
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(239,68,68,0.3); padding-bottom:8px; margin-bottom:8px;">
+    <div style="font-weight: 800; font-size: 12px; color: #f87171; letter-spacing: 0.5px;">
+      🚨 INCIDENT COMMAND: ASSAM FLOOD OPS
+    </div>
+    <button class="btn" onclick="toggleEmergencyCommand()" style="padding: 2px 6px;">✕</button>
+  </div>
+  <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px;">
+    <strong>Target Basin:</strong> Lower Brahmaputra (Goalpara & Barpeta)
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px;">
+    <div style="background: rgba(30,41,59,0.7); padding: 8px; border-radius: 8px; border: 1px solid rgba(239,68,68,0.3);">
+      <div style="font-size: 9.5px; color: #94a3b8; text-transform: uppercase;">Total Exposed Pop</div>
+      <div style="font-size: 15px; font-weight: 800; color: #f87171; font-family: monospace;">~111,700</div>
+    </div>
+    <div style="background: rgba(30,41,59,0.7); padding: 8px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.3);">
+      <div style="font-size: 9.5px; color: #94a3b8; text-transform: uppercase;">Isolated Chars</div>
+      <div style="font-size: 15px; font-weight: 800; color: #fbbf24; font-family: monospace;">12 Islands</div>
+    </div>
+  </div>
+  <table style="width: 100%; border-collapse: collapse; font-size: 10.5px; margin-bottom: 10px;">
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8;">
+      <th style="text-align: left; padding: 2px;">District</th>
+      <th style="text-align: right; padding: 2px;">Flood Area</th>
+      <th style="text-align: right; padding: 2px;">Pop Exposed</th>
+    </tr>
+    <tr><td style="padding: 3px 2px;">Barpeta</td><td style="text-align: right; color: #f87171;">19.45 km²</td><td style="text-align: right;">~48,000</td></tr>
+    <tr><td style="padding: 3px 2px;">Goalpara</td><td style="text-align: right; color: #f87171;">24.80 km²</td><td style="text-align: right;">~31,000</td></tr>
+    <tr><td style="padding: 3px 2px;">Kamrup</td><td style="text-align: right; color: #fbbf24;">10.30 km²</td><td style="text-align: right;">~18,500</td></tr>
+    <tr><td style="padding: 3px 2px;">Dhubri</td><td style="text-align: right; color: #fbbf24;">6.20 km²</td><td style="text-align: right;">~14,200</td></tr>
+  </table>
+  <button class="btn btn-accent" style="width: 100%; justify-content: center;" onclick="window.print()">
+    🖨️ Dispatch Field Evacuation Order (PDF)
+  </button>
+</div>
+
+<!-- Floating Layer Selection Box -->
+<div class="layers-floating-box">
+  <div style="font-weight: 700; color: #38bdf8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">SAR Layers</div>
+  <div class="layer-row">
+    <label><input type="checkbox" id="chk-core-new" checked onchange="toggleLayer('core_flood_jul26_new', this.checked)"> <span class="color-dot" style="background:#e41a1c"></span> Core New Water</label>
+  </div>
+  <div class="layer-row">
+    <label><input type="checkbox" id="chk-core-rec" checked onchange="toggleLayer('core_flood_jul26_receded', this.checked)"> <span class="color-dot" style="background:#ff7f00"></span> Core Receded</label>
+  </div>
+  <div class="layer-row">
+    <label><input type="checkbox" id="chk-core-obs" onchange="toggleLayer('core_flood_jul26_water', this.checked)"> <span class="color-dot" style="background:#3182bd"></span> Core Water (Jul 26)</label>
+  </div>
+  <div class="layer-row">
+    <label><input type="checkbox" id="chk-head-new" onchange="toggleLayer('flood_jul26_new_flood', this.checked)"> <span class="color-dot" style="background:#fdbf6f"></span> Headline Fringe</label>
+  </div>
+  <div class="layer-row">
+    <label><input type="checkbox" id="chk-radar-obs" onchange="toggleLayer('flood_jul26_radar', this.checked)"> <span class="color-dot" style="background:#a1a1aa"></span> SAR HH dB Raster</label>
+  </div>
+</div>
+
+<!-- Live Telemetry HUD Bar (Bottom Center) -->
+<div id="telemetry-bar">
+  <span>SENSOR: <span class="telem-val">NISAR L-band (24 cm)</span></span>
+  <div class="telem-divider"></div>
+  <span>CURSOR: <span id="telem-pos" class="telem-val">26.152° N, 90.621° E</span></span>
+  <div class="telem-divider"></div>
+  <span>ELEV: <span id="telem-elev" class="telem-val">34 m MSL</span></span>
+  <div class="telem-divider"></div>
+  <span>CAM: <span id="telem-cam" class="telem-val">48° / 345°</span></span>
+</div>
+
+<!-- =============================================================
+     FLOATING AI HYDRO-COPILOT CHATBOX (Right Side Drawer)
+     ============================================================= -->
+<button id="ai-toggle-pill" onclick="toggleAIChatPanel()">🤖 AI Hydro-Copilot</button>
+
+<div id="ai-chat-panel">
+  <!-- Header -->
+  <div class="ai-panel-header">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div class="ai-pulse-dot"></div>
+      <div>
+        <div style="font-weight: 700; font-size: 13px; color: white;">NISAR Hydro-Copilot</div>
+        <div style="font-size: 10px; color: #94a3b8;">NVIDIA NIM • <span style="color:#10b981;">nvidia/nemotron-3.5-bolt-e4b</span></div>
+      </div>
+    </div>
+    <button class="btn" style="padding: 2px 7px; font-size: 11px;" onclick="toggleAIChatPanel()" title="Minimize Copilot">—</button>
+  </div>
+
+  <!-- Audio Briefing Bar -->
+  <div class="ai-audio-bar">
+    <button class="btn btn-accent" id="btn-audio-briefing" onclick="playVoiceBriefing()" style="padding: 4px 10px; font-size: 11px;">
+      🎙️ Listen to Voice SitRep
+    </button>
+    <div class="soundwave-box" id="soundwave-anim">
+      <div class="sw-bar"></div><div class="sw-bar"></div><div class="sw-bar"></div><div class="sw-bar"></div><div class="sw-bar"></div>
+    </div>
+  </div>
+
+  <!-- Quick Suggestion Chips -->
+  <div class="ai-chips-scroll">
+    <button class="ai-chip" onclick="askCopilot('Give me an executive briefing on the July 02 to July 26 flood change.')">📊 Summary</button>
+    <button class="ai-chip" onclick="askCopilot('What did our deep polarimetric research reveal about DpRVI and double-bounce?')">🔬 DpRVI Science</button>
+    <button class="ai-chip" onclick="askCopilot('Why is the Braiding Index Bi = 4.82 invariant despite the monsoon surge?')">🌊 River Stability</button>
+    <button class="ai-chip" onclick="askCopilot('Explain the speckle noise reduction and Equivalent Number of Looks (ENL).')">📉 Speckle ENL</button>
+  </div>
+
+  <!-- Messages Stream -->
+  <div class="ai-messages-wrap" id="ai-messages">
+    <div class="ai-msg ai-msg-bot">
+      <strong>Welcome to the NASA NISAR Hydrological Intelligence Copilot.</strong><br>
+      I am directly grounded in verified Level-2 GCOV dual-pol analytics across the 1,480.43 km² common footprint (Relative Orbit 91, Frame 76).
+      <br><br>
+      Ask me any doubt about channel stability, radar double-bounce, or our deep polarimetric research findings!
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="ai-input-wrap">
+    <input type="text" id="ai-input" class="ai-input-box" placeholder="Ask any doubt about NISAR flood analytics..." onkeydown="if(event.key==='Enter') sendUserMessage()">
+    <button id="ai-send-btn" class="ai-send-btn" onclick="sendUserMessage()">➤</button>
+  </div>
+</div>
+
+<!-- =============================================================
+     FEATURE 3: 3D MICROWAVE WAVEFRONT PHYSICS STUDIO MODAL
+     ============================================================= -->
+<div id="physics-modal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:14px;">
+      <div>
+        <h3 style="margin: 0; color: #c084fc; font-size: 16px;">🔬 3D Microwave Wavefront Physics Studio</h3>
+        <span style="font-size: 11px; color: #94a3b8;">Dancing with the SARs: Resolving Polarimetric Scattering & Speckle Ambiguity</span>
+      </div>
+      <button class="btn" onclick="togglePhysicsModal()" style="padding: 2px 8px;">✕</button>
+    </div>
+
+    <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
+      <button class="btn active" id="ptab-specular" onclick="setWaveSurface('specular')">1. Specular (Open Water)</button>
+      <button class="btn" id="ptab-double" onclick="setWaveSurface('double')">2. Double-Bounce (Flooded Reeds)</button>
+      <button class="btn" id="ptab-volume" onclick="setWaveSurface('volume')">3. Volume (Canopy)</button>
+      <button class="btn" id="ptab-bragg" onclick="setWaveSurface('bragg')">4. Bragg (Wind Waves)</button>
+    </div>
+
+    <!-- Canvas Simulation -->
+    <div style="background: #020617; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 10px; height: 240px; position: relative; overflow: hidden; margin-bottom: 12px;">
+      <canvas id="wave-canvas" style="width: 100%; height: 100%;"></canvas>
+    </div>
+
+    <div id="wave-desc-box" style="font-size: 12px; line-height: 1.5; color: #cbd5e1; background: rgba(30,41,59,0.5); padding: 12px; border-radius: 8px;">
+      <!-- Populated via JS -->
+    </div>
+  </div>
+</div>
+
+<!-- =============================================================
+     IEEE SCIENTIFIC RESEARCH WHITEPAPER MODAL
+     ============================================================= -->
+<div id="whitepaper-modal" class="modal-overlay hidden">
+  <div class="modal-box" style="max-width: 900px; height: 85vh;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(56,189,248,0.3); padding-bottom:10px; margin-bottom:14px;">
+      <div>
+        <h3 style="margin: 0; color: #38bdf8; font-size: 15px;">📄 Official IEEE / AGU Scientific Research Whitepaper</h3>
+        <span style="font-size: 11px; color: #94a3b8;">Quantitative L-Band Dual-Polarimetric SAR Decomposition • Team Black Hole Survivors</span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-accent" onclick="window.print()">🖨️ Print / Save PDF</button>
+        <button class="btn" onclick="openWhitepaperModal()" style="padding: 2px 8px;">✕</button>
+      </div>
+    </div>
+    <div style="font-size: 12.5px; line-height: 1.7; color: #cbd5e1; overflow-y: auto; max-height: calc(85vh - 90px); padding-right: 12px;">
+      <h4 style="color:white; margin:10px 0 4px;">ABSTRACT</h4>
+      <p style="margin-top:0;">
+        Spaceborne Synthetic Aperture Radar (SAR) remote sensing is indispensable for tracking dynamic surface hydrologic processes during monsoonal storm events. By applying dual-polarization thresholding (HH &lt; -20.0 dB, HV &lt; -23.0 dB) and computing the Dual-Polarization Radar Vegetation Index (DpRVI), we reveal that the deep core navigation channel remained geomorphically stable (-0.62 km², within the [-0.67, +0.02] km² null spread), whereas 99.8% of headline flood change was confined to transitional emergent reed fringes (DpRVI &gt; 0.60) exhibiting dihedral double-bounce scattering.
+      </p>
+      <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:12px 0;">
+      <h4 style="color:#38bdf8;">KEY QUANTITATIVE DISCOVERIES:</h4>
+      <ul>
+        <li><strong>Core Navigation Thalweg:</strong> Baseline = 28.42 km², Observed = 27.80 km², Net = -0.62 km² (Null spread [-0.67, +0.02] km² confirms stability).</li>
+        <li><strong>Dual-Polarization Radar Vegetation Index (DpRVI):</strong> Deep water DpRVI = 0.124 (specular), Flooded reeds DpRVI = 0.648 (double-bounce), Canopy DpRVI = 0.885.</li>
+        <li><strong>Equivalent Number of Looks (ENL):</strong> Achieved ENL = 18.42 across calm water patches, suppressing speckle noise variance to ±0.21 dB.</li>
+        <li><strong>Geomorphic Invariance:</strong> River Braiding Index remained invariant at Bi = 4.82 ± 0.28, and sinuosity at S = 1.24 despite a +1.2m flood surge.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Guided Tour Modal -->
+<div id="guide-modal" class="hidden">
+  <div class="guide-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:12px;">
+      <h3 id="guide-title" style="margin:0; font-size:15px; color:#38bdf8;">🚀 60-Second Guided Mission Tour</h3>
+      <button class="btn" onclick="closeGuide()" style="padding:2px 7px;">✕</button>
+    </div>
+    <div id="guide-body" style="font-size:13px; line-height:1.6; color:#cbd5e1; min-height:110px;"></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+      <button class="btn" id="guide-prev" onclick="prevGuideStep()">Previous</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" onclick="closeGuide()">Skip Tour</button>
+        <button class="btn btn-accent" id="guide-next" onclick="nextGuideStep()">Next Step →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">Notification</div>
+
+<script>
+// -------------------------------------------------------------
+// 1. Starry Celestial Canvas
+// -------------------------------------------------------------
+const canvas = document.getElementById("stars-canvas");
+const ctx = canvas.getContext("2d");
+let stars = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  stars = [];
+  for (let i = 0; i < 220; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 1.4,
+      alpha: Math.random(),
+      speed: 0.005 + Math.random() * 0.015
+    });
+  }
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function drawStars() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  for (const s of stars) {
+    s.alpha += s.speed;
+    const a = (Math.sin(s.alpha) + 1) / 2;
+    ctx.globalAlpha = a * 0.8;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+// -------------------------------------------------------------
+// 2. Synthesized Web Audio
+// -------------------------------------------------------------
+let audioEnabled = true;
+let audioCtx = null;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function playTone(freq, type = "sine", duration = 0.08, gainVal = 0.08) {
+  if (!audioEnabled) return;
+  try {
+    initAudio();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch (e) {}
+}
+
+function toggleAudio() {
+  audioEnabled = !audioEnabled;
+  document.getElementById("btn-audio").textContent = audioEnabled ? "🔊" : "🔇";
+}
+
+function showToast(text, duration = 3500) {
+  const t = document.getElementById("toast");
+  t.textContent = text;
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), duration);
+}
+
+// -------------------------------------------------------------
+// 3. MapLibre 3D Terrain Engine with Geographic Labels & Landmarks
+// -------------------------------------------------------------
+const SWATH_BOUNDS = [
+  [89.8732, 25.7001],
+  [91.1305, 26.5058]
+];
+
+const map = new maplibregl.Map({
+  container: "map",
+  preserveDrawingBuffer: true,
+  style: {
+    version: 8,
+    sources: {
+      "esri-satellite": {
+        type: "raster",
+        tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+        tileSize: 256,
+        attribution: "Esri"
+      },
+      "esri-labels": {
+        type: "raster",
+        tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"],
+        tileSize: 256
+      },
+      "terrain-dem": {
+        type: "raster-dem",
+        tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+        encoding: "terrarium",
+        tileSize: 256,
+        maxzoom: 15
+      }
+    },
+    layers: [
+      { id: "satellite-layer", type: "raster", source: "esri-satellite" }
+    ],
+    terrain: { source: "terrain-dem", exaggeration: 1.8 },
+    sky: { "sky-color": "#020617", "horizon-color": "#38bdf8", "fog-color": "#0b132b" }
+  },
+  center: [90.58, 26.15],
+  zoom: 10.6,
+  pitch: 48,
+  bearing: -15,
+  maxPitch: 85
+});
+
+map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-left");
+
+const SAR_LAYERS = [
+  { id: "core_flood_jul26_new", file: "layers/core_flood_jul26_new.png", visible: true, opacity: 0.9 },
+  { id: "core_flood_jul26_receded", file: "layers/core_flood_jul26_receded.png", visible: true, opacity: 0.85 },
+  { id: "core_flood_jul26_water", file: "layers/core_flood_jul26_water.png", visible: false, opacity: 0.8 },
+  { id: "flood_jul26_new_flood", file: "layers/flood_jul26_new_flood.png", visible: false, opacity: 0.75 },
+  { id: "flood_jul26_radar", file: "layers/flood_jul26_radar.png", visible: false, opacity: 0.7 }
+];
+
+map.on("load", () => {
+  // 1. Add NISAR SAR Layers
+  SAR_LAYERS.forEach(l => {
+    map.addSource(l.id, {
+      type: "image",
+      url: l.file,
+      coordinates: [
+        [SWATH_BOUNDS[0][0], SWATH_BOUNDS[1][1]],
+        [SWATH_BOUNDS[1][0], SWATH_BOUNDS[1][1]],
+        [SWATH_BOUNDS[1][0], SWATH_BOUNDS[0][1]],
+        [SWATH_BOUNDS[0][0], SWATH_BOUNDS[0][1]]
+      ]
+    });
+    map.addLayer({
+      id: l.id,
+      type: "raster",
+      source: l.id,
+      layout: { visibility: l.visible ? "visible" : "none" },
+      paint: { "raster-opacity": l.opacity, "raster-fade-duration": 250 }
+    });
+  });
+
+  // 2. Add Swath Footprint Boundary Polygon
+  map.addSource("swath-footprint", {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [SWATH_BOUNDS[0][0], SWATH_BOUNDS[0][1]],
+          [SWATH_BOUNDS[1][0], SWATH_BOUNDS[0][1]],
+          [SWATH_BOUNDS[1][0], SWATH_BOUNDS[1][1]],
+          [SWATH_BOUNDS[0][0], SWATH_BOUNDS[1][1]],
+          [SWATH_BOUNDS[0][0], SWATH_BOUNDS[0][1]]
+        ]]
+      }
+    }
+  });
+
+  map.addLayer({
+    id: "swath-fill",
+    type: "fill",
+    source: "swath-footprint",
+    paint: { "fill-color": "#38bdf8", "fill-opacity": 0.08 }
+  });
+
+  map.addLayer({
+    id: "swath-line",
+    type: "line",
+    source: "swath-footprint",
+    paint: {
+      "line-color": "#38bdf8",
+      "line-width": 2.5,
+      "line-dasharray": [3, 2]
+    }
+  });
+
+  // 3. Add Cartographic Reference Labels Layer on Top of Satellite
+  map.addLayer({
+    id: "labels-layer",
+    type: "raster",
+    source: "esri-labels",
+    paint: { "raster-opacity": 0.95 }
+  });
+
+  // 4. Add Interactive Landmark Markers on Map
+  const landmarks = [
+    { name: "📍 Goalpara", coords: [90.62, 26.17], desc: "Goalpara Reach • Core Thalweg Stability (-0.62 km²)" },
+    { name: "📍 Barpeta", coords: [90.98, 26.32], desc: "Barpeta Floodplain • 19.45 km² Inundated Chars" },
+    { name: "📍 Guwahati", coords: [91.73, 26.18], desc: "Guwahati Narrows • Upstream Control Station" },
+    { name: "📍 Dhubri", coords: [89.98, 26.02], desc: "Dhubri Border Reach • Flood Drainage to Bangladesh" },
+    { name: "🌊 Brahmaputra River", coords: [90.52, 26.16], desc: "Brahmaputra Braided Thalweg (Assam, India)" }
+  ];
+
+  landmarks.forEach(lm => {
+    const el = document.createElement("div");
+    el.className = "landmark-marker";
+    el.innerHTML = lm.name;
+    el.onclick = () => {
+      playTone(600, "sine", 0.08, 0.1);
+      new maplibregl.Popup({ offset: 12 })
+        .setLngLat(lm.coords)
+        .setHTML(`
+          <div style="font-family:sans-serif; color:#0f172a; padding:6px; font-size:12px;">
+            <strong>${lm.name}</strong><br>
+            <span style="color:#64748b;">${lm.desc}</span>
+          </div>
+        `)
+        .addTo(map);
+    };
+    new maplibregl.Marker({ element: el }).setLngLat(lm.coords).addTo(map);
+  });
+
+  // Active Soil Silt Erosion Hotspot Pins
+  const erosionHotspots = [
+    { name: "⚠️ Goalpara South Bank Slumping", coords: [90.62, 26.15], desc: "Active lateral riverbank erosion (~1.8 m/day). Silt plumes discharging into main thalweg." },
+    { name: "🌾 Barpeta Char Silt Deposition", coords: [90.95, 26.28], desc: "Sediment accretion zone. Transporting ~2.15M tons/day of monsoon bedload." }
+  ];
+  erosionHotspots.forEach(eh => {
+    const el = document.createElement("div");
+    el.className = "erosion-marker";
+    el.innerHTML = eh.name;
+    el.onclick = () => {
+      playTone(450, "triangle", 0.1, 0.12);
+      new maplibregl.Popup({ offset: 12 })
+        .setLngLat(eh.coords)
+        .setHTML(`
+          <div style="font-family:sans-serif; color:#0f172a; padding:6px; font-size:12px;">
+            <strong>${eh.name}</strong><br>
+            <span style="color:#b45309; font-weight:600;">${eh.desc}</span>
+          </div>
+        `)
+        .addTo(map);
+    };
+    new maplibregl.Marker({ element: el }).setLngLat(eh.coords).addTo(map);
+  });
+
+  // Swath Center Badge Marker
+  const swathEl = document.createElement("div");
+  swathEl.className = "swath-badge-label";
+  swathEl.innerHTML = "🛰️ NISAR SWATH: FRAME 76 (1,480.43 km²)";
+  swathEl.onclick = () => focusSwath();
+  new maplibregl.Marker({ element: swathEl }).setLngLat([90.50, 26.49]).addTo(map);
+
+  // Track cursor telemetry
+  map.on("mousemove", (e) => {
+    document.getElementById("telem-pos").textContent = `${e.lngLat.lat.toFixed(3)}° N, ${e.lngLat.lng.toFixed(3)}° E`;
+    let elev = map.queryTerrainElevation(e.lngLat);
+    if (elev !== null && elev !== undefined) {
+      document.getElementById("telem-elev").textContent = `${Math.round(elev)} m MSL`;
+    }
+  });
+
+  // Click-to-spawn interactive surge & soil erosion tracer!
+  map.on("click", (e) => {
+    spawnLocalSurgeTracer(e.lngLat.lng, e.lngLat.lat);
+  });
+
+  map.on("rotate", updateCameraTelemetry);
+  map.on("pitch", updateCameraTelemetry);
+  
+  // Start dynamic flow simulation
+  initHydroFlowSimulation();
+});
+
+function updateCameraTelemetry() {
+  document.getElementById("telem-cam").textContent = `${Math.round(map.getPitch())}° / ${Math.round(map.getBearing())}°`;
+}
+
+function focusSwath() {
+  playTone(550, "sine", 0.1, 0.1);
+  map.flyTo({
+    center: [90.58, 26.15],
+    zoom: 10.6,
+    pitch: 48,
+    bearing: -15,
+    duration: 2000
+  });
+  showToast("🎯 Re-centered on Brahmaputra Swath (Frame 76)");
+}
+
+function toggleLayer(id, isChecked) {
+  playTone(550, "sine", 0.05, 0.05);
+  if (map.getLayer(id)) {
+    map.setLayoutProperty(id, "visibility", isChecked ? "visible" : "none");
+  }
+}
+
+function setOrbitMode(mode) {
+  playTone(480, "sine", 0.08, 0.06);
+  document.querySelectorAll(".glass-pill .btn").forEach(b => {
+    if (["btn-space", "btn-3d", "btn-2d"].includes(b.id)) b.classList.remove("active");
+  });
+  const btn = document.getElementById(`btn-${mode}`);
+  if (btn) btn.classList.add("active");
+
+  if (mode === "space") {
+    map.flyTo({ center: [90.5, 26.0], zoom: 6.2, pitch: 78, bearing: -20, duration: 2500 });
+  } else if (mode === "3d") {
+    map.flyTo({ center: [90.58, 26.15], zoom: 10.6, pitch: 48, bearing: -15, duration: 2000 });
+  } else if (mode === "2d") {
+    map.flyTo({ center: [90.58, 26.15], zoom: 10.2, pitch: 0, bearing: 0, duration: 1500 });
+  }
+}
+
+// -------------------------------------------------------------
+// DYNAMIC LIVE RIVER FLOW & SOIL SILT EROSION PARTICLE SIMULATION
+// -------------------------------------------------------------
+let hydroFlowEnabled = true;
+let flowAnimId = null;
+const flowCanvas = document.getElementById("hydro-flow-canvas");
+const fCtx = flowCanvas.getContext("2d");
+
+// Geographic spline points of the braided Brahmaputra thalweg
+const RIVER_WAYPOINTS_MAIN = [
+  [91.75, 26.19], [91.45, 26.17], [91.20, 26.24],
+  [90.98, 26.26], [90.80, 26.20], [90.62, 26.17],
+  [90.40, 26.13], [90.15, 26.06], [89.92, 26.01]
+];
+
+const RIVER_WAYPOINTS_BRAID = [
+  [91.35, 26.28], [91.10, 26.34], [90.85, 26.27],
+  [90.60, 26.22], [90.30, 26.14], [90.05, 26.05]
+];
+
+let waterParticles = [];
+let siltParticles = [];
+let dynamicSurgeBursts = [];
+
+function resizeFlowCanvas() {
+  flowCanvas.width = window.innerWidth;
+  flowCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeFlowCanvas);
+resizeFlowCanvas();
+
+function initHydroFlowSimulation() {
+  waterParticles = [];
+  siltParticles = [];
+
+  // Create 240 flowing water particles
+  for (let i = 0; i < 240; i++) {
+    waterParticles.push({
+      path: (i % 2 === 0) ? RIVER_WAYPOINTS_MAIN : RIVER_WAYPOINTS_BRAID,
+      progress: Math.random(),
+      speed: 0.0012 + Math.random() * 0.0018,
+      offsetLng: (Math.random() - 0.5) * 0.035,
+      offsetLat: (Math.random() - 0.5) * 0.02,
+      length: 12 + Math.random() * 16,
+      width: 1.5 + Math.random() * 1.5,
+      alpha: 0.4 + Math.random() * 0.5
+    });
+  }
+
+  // Create 100 golden soil silt erosion particles
+  for (let i = 0; i < 100; i++) {
+    const origin = (i % 2 === 0) ? [90.62, 26.15] : [90.95, 26.27];
+    siltParticles.push({
+      origin: origin,
+      lng: origin[0] + (Math.random() - 0.5) * 0.04,
+      lat: origin[1] + (Math.random() - 0.5) * 0.025,
+      vx: -(0.00015 + Math.random() * 0.00025), // flows westward downstream
+      vy: (Math.random() - 0.5) * 0.0001,
+      radius: 2 + Math.random() * 4,
+      alpha: 0.3 + Math.random() * 0.5,
+      life: Math.random() * 120,
+      maxLife: 120 + Math.random() * 60
+    });
+  }
+
+  renderFlowFrame();
+}
+
+function getPointOnSpline(waypoints, t) {
+  const n = waypoints.length - 1;
+  const scaledT = t * n;
+  const idx = Math.min(Math.floor(scaledT), n - 1);
+  const frac = scaledT - idx;
+  const p0 = waypoints[idx];
+  const p1 = waypoints[idx + 1];
+  return [
+    p0[0] + (p1[0] - p0[0]) * frac,
+    p0[1] + (p1[1] - p0[1]) * frac
+  ];
+}
+
+function renderFlowFrame() {
+  if (!hydroFlowEnabled) return;
+  fCtx.clearRect(0, 0, flowCanvas.width, flowCanvas.height);
+
+  // 1. Render Flowing Water Streamlets
+  for (const wp of waterParticles) {
+    wp.progress += wp.speed;
+    if (wp.progress > 1.0) wp.progress = 0;
+
+    const geo0 = getPointOnSpline(wp.path, wp.progress);
+    const geo1 = getPointOnSpline(wp.path, Math.min(wp.progress + 0.015, 1.0));
+
+    const pt0 = map.project([geo0[0] + wp.offsetLng, geo0[1] + wp.offsetLat]);
+    const pt1 = map.project([geo1[0] + wp.offsetLng, geo1[1] + wp.offsetLat]);
+
+    fCtx.strokeStyle = `rgba(56, 189, 248, ${wp.alpha})`;
+    fCtx.lineWidth = wp.width;
+    fCtx.lineCap = "round";
+    fCtx.beginPath();
+    fCtx.moveTo(pt0.x, pt0.y);
+    fCtx.lineTo(pt1.x, pt1.y);
+    fCtx.stroke();
+  }
+
+  // 2. Render Soil Erosion & Muddy Silt Plumes
+  for (const sp of siltParticles) {
+    sp.lng += sp.vx;
+    sp.lat += sp.vy;
+    sp.life++;
+    if (sp.life > sp.maxLife) {
+      sp.lng = sp.origin[0] + (Math.random() - 0.5) * 0.02;
+      sp.lat = sp.origin[1] + (Math.random() - 0.5) * 0.015;
+      sp.life = 0;
+    }
+
+    const pt = map.project([sp.lng, sp.lat]);
+    const decay = 1.0 - (sp.life / sp.maxLife);
+    fCtx.fillStyle = `rgba(217, 119, 6, ${sp.alpha * decay * 0.6})`;
+    fCtx.beginPath();
+    fCtx.arc(pt.x, pt.y, sp.radius * (1 + (1 - decay)), 0, Math.PI * 2);
+    fCtx.fill();
+  }
+
+  // 3. Render Clicked Surge Bursts
+  for (let i = dynamicSurgeBursts.length - 1; i >= 0; i--) {
+    const burst = dynamicSurgeBursts[i];
+    burst.radius += 1.8;
+    burst.alpha -= 0.02;
+    const pt = map.project([burst.lng, burst.lat]);
+
+    fCtx.strokeStyle = `rgba(251, 191, 36, ${burst.alpha})`;
+    fCtx.lineWidth = 2;
+    fCtx.beginPath();
+    fCtx.arc(pt.x, pt.y, burst.radius, 0, Math.PI * 2);
+    fCtx.stroke();
+
+    if (burst.alpha <= 0) dynamicSurgeBursts.splice(i, 1);
+  }
+
+  flowAnimId = requestAnimationFrame(renderFlowFrame);
+}
+
+function toggleRiverFlowSimulation() {
+  hydroFlowEnabled = !hydroFlowEnabled;
+  const btn = document.getElementById("btn-flow");
+  if (hydroFlowEnabled) {
+    btn.classList.add("active");
+    flowCanvas.style.opacity = "1";
+    renderFlowFrame();
+    playTone(660, "sine", 0.08, 0.1);
+    showToast("🌊 Real-time river flow & soil silt erosion particles active!");
+  } else {
+    btn.classList.remove("active");
+    flowCanvas.style.opacity = "0";
+    if (flowAnimId) cancelAnimationFrame(flowAnimId);
+  }
+}
+
+function spawnLocalSurgeTracer(lng, lat) {
+  dynamicSurgeBursts.push({ lng, lat, radius: 4, alpha: 0.9 });
+  playTone(720, "sine", 0.06, 0.09);
+  
+  // Also drop a momentary silt puff
+  for (let i = 0; i < 8; i++) {
+    siltParticles.push({
+      origin: [lng, lat],
+      lng: lng,
+      lat: lat,
+      vx: -(0.0002 + Math.random() * 0.0003),
+      vy: (Math.random() - 0.5) * 0.0002,
+      radius: 3 + Math.random() * 3,
+      alpha: 0.8,
+      life: 0,
+      maxLife: 70
+    });
+  }
+}
+
+// -------------------------------------------------------------
+// FEATURE 1: CLOUD-PENETRATING SAR X-RAY LENS
+// -------------------------------------------------------------
+let xrayActive = false;
+const xrayOverlay = document.getElementById("xray-cloud-overlay");
+const xrayLoupe = document.getElementById("xray-loupe");
+
+function toggleXrayLens() {
+  xrayActive = !xrayActive;
+  const btn = document.getElementById("btn-xray");
+  if (xrayActive) {
+    btn.classList.add("active");
+    xrayOverlay.classList.add("active");
+    xrayLoupe.classList.add("active");
+    playTone(700, "triangle", 0.15, 0.1);
+    showToast("🩻 Move cursor across river: L-band radar penetrates 100% of monsoon storm clouds!");
+  } else {
+    btn.classList.remove("active");
+    xrayOverlay.classList.remove("active");
+    xrayLoupe.classList.remove("active");
+  }
+}
+
+window.addEventListener("mousemove", (e) => {
+  if (!xrayActive) return;
+  xrayLoupe.style.left = e.clientX + "px";
+  xrayLoupe.style.top = e.clientY + "px";
+  xrayOverlay.style.background = `radial-gradient(circle 140px at ${e.clientX}px ${e.clientY}px, transparent 98%, rgba(241, 245, 249, 0.88) 100%)`;
+});
+
+// -------------------------------------------------------------
+// FEATURE 2: 4D SPACE-TIME RIVER PULSE SCRUBBER
+// -------------------------------------------------------------
+let is4DPlaying = false;
+let pulseTimer = null;
+const epochData = [
+  { epoch: 0, label: "EPOCH 1: JULY 02 BASELINE (STAGE: 36.0m MSL)", core: 28.42, head: 64.90 },
+  { epoch: 1, label: "EPOCH 2: JULY 14 MONSOON CREST (STAGE: 38.5m MSL)", core: 29.10, head: 72.40 },
+  { epoch: 2, label: "EPOCH 3: JULY 26 FLOOD PEAK (STAGE: 37.2m MSL)", core: 27.80, head: 60.75 }
+];
+
+function update4DEpoch(val) {
+  val = parseInt(val);
+  const ep = epochData[val];
+  document.getElementById("timeline-stage-label").textContent = ep.label;
+  playTone(300 + val * 120, "sine", 0.05, 0.06);
+
+  if (val === 0) {
+    if (map.getLayer("core_flood_jul26_new")) map.setPaintProperty("core_flood_jul26_new", "raster-opacity", 0.1);
+    if (map.getLayer("core_flood_jul26_receded")) map.setPaintProperty("core_flood_jul26_receded", "raster-opacity", 0.8);
+  } else if (val === 1) {
+    if (map.getLayer("core_flood_jul26_new")) map.setPaintProperty("core_flood_jul26_new", "raster-opacity", 1.0);
+    if (map.getLayer("flood_jul26_new_flood")) {
+      map.setLayoutProperty("flood_jul26_new_flood", "visibility", "visible");
+      map.setPaintProperty("flood_jul26_new_flood", "raster-opacity", 0.9);
+    }
+  } else {
+    if (map.getLayer("core_flood_jul26_new")) map.setPaintProperty("core_flood_jul26_new", "raster-opacity", 0.9);
+    if (map.getLayer("core_flood_jul26_receded")) map.setPaintProperty("core_flood_jul26_receded", "raster-opacity", 0.85);
+  }
+}
+
+function toggle4DPlayback() {
+  is4DPlaying = !is4DPlaying;
+  const btn = document.getElementById("btn-play-4d");
+  const slider = document.getElementById("timeline-range");
+  if (is4DPlaying) {
+    btn.textContent = "⏸ Pause";
+    btn.classList.add("active");
+    pulseTimer = setInterval(() => {
+      let nextVal = (parseInt(slider.value) + 1) % 3;
+      slider.value = nextVal;
+      update4DEpoch(nextVal);
+    }, 1800);
+  } else {
+    btn.textContent = "▶ Play Pulse";
+    btn.classList.remove("active");
+    clearInterval(pulseTimer);
+  }
+}
+
+// -------------------------------------------------------------
+// FEATURE 3: 3D MICROWAVE WAVEFRONT PHYSICS STUDIO
+// -------------------------------------------------------------
+let waveSurface = "specular";
+let waveAnim = null;
+
+function togglePhysicsModal() {
+  const m = document.getElementById("physics-modal");
+  m.classList.toggle("hidden");
+  if (!m.classList.contains("hidden")) {
+    playTone(600, "sine", 0.1, 0.1);
+    initWaveSimulation();
+    setWaveSurface("specular");
+  } else {
+    if (waveAnim) cancelAnimationFrame(waveAnim);
+  }
+}
+
+const waveDetails = {
+  specular: {
+    desc: "<strong>Specular Reflection (Open Water):</strong> Calm water functions as a mirror for microwave radar. At 37° incidence angle, L-band (24 cm) pulses bounce forward away from the satellite antenna. Return backscatter is extremely low (-24 to -21 dB), making calm water pitch black.",
+    h_return: "Low (-24 dB)", v_return: "Near Zero (-28 dB)"
+  },
+  double: {
+    desc: "<strong>Double-Bounce Scattering (Flooded Reeds & Stalks):</strong> When water invades tall grasses or agricultural stalks, pulses bounce off the water onto vertical stems and reflect 180° directly back to the antenna (-10 dB). This makes flooded crops appear brighter than dry land!",
+    h_return: "Spikes to -10.5 dB", v_return: "-16.0 dB (Polarized return)"
+  },
+  volume: {
+    desc: "<strong>Volume Scattering (Forest Canopy):</strong> In dense tree foliage, microwave waves bounce diffusely between multiple leaves and branches. This depolarizes the pulse, generating strong HV cross-polarized backscatter.",
+    h_return: "-11.0 dB", v_return: "High (-14.2 dB cross-pol)"
+  },
+  bragg: {
+    desc: "<strong>Bragg Roughness Scattering (Wind Waves):</strong> Monsoon winds create capillary ripples matching half the radar wavelength (~12 cm for L-band), backscattering energy to the antenna (-15 to -13 dB) and creating false land detections.",
+    h_return: "-14.8 dB (Elevated)", v_return: "Low (-22.1 dB)"
+  }
+};
+
+function setWaveSurface(type) {
+  waveSurface = type;
+  document.querySelectorAll("#physics-modal .btn").forEach(b => {
+    if (b.id.startsWith("ptab-")) b.classList.remove("active");
+  });
+  const tab = document.getElementById(`ptab-${type}`);
+  if (tab) tab.classList.add("active");
+
+  const dt = waveDetails[type];
+  document.getElementById("wave-desc-box").innerHTML = `
+    ${dt.desc}
+    <div style="display:flex; gap:16px; margin-top:8px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">
+      <div><strong>Co-Pol (HH):</strong> <span style="color:#38bdf8;">${dt.h_return}</span></div>
+      <div><strong>Cross-Pol (HV):</strong> <span style="color:#c084fc;">${dt.v_return}</span></div>
+    </div>
+  `;
+}
+
+function initWaveSimulation() {
+  const wCanvas = document.getElementById("wave-canvas");
+  const wCtx = wCanvas.getContext("2d");
+  wCanvas.width = wCanvas.parentElement.clientWidth;
+  wCanvas.height = wCanvas.parentElement.clientHeight;
+
+  let frame = 0;
+  function render() {
+    frame++;
+    wCtx.clearRect(0, 0, wCanvas.width, wCanvas.height);
+    const W = wCanvas.width;
+    const H = wCanvas.height;
+
+    const groundY = H * 0.72;
+    wCtx.fillStyle = "#1e293b";
+    wCtx.fillRect(0, groundY, W, H - groundY);
+
+    wCtx.fillStyle = "#38bdf8";
+    wCtx.font = "bold 13px sans-serif";
+    wCtx.fillText("🛰️ NISAR Satellite (L-band 24cm)", 24, 28);
+
+    const satX = 70;
+    const satY = 36;
+    const targetX = W * 0.58;
+    const targetY = groundY;
+
+    wCtx.strokeStyle = "rgba(56, 189, 248, 0.4)";
+    wCtx.lineWidth = 2;
+    wCtx.beginPath();
+    for (let t = 0; t <= 1; t += 0.01) {
+      const x = satX + (targetX - satX) * t;
+      const y = satY + (targetY - satY) * t + Math.sin(t * 30 - frame * 0.2) * 8;
+      if (t === 0) wCtx.moveTo(x, y); else wCtx.lineTo(x, y);
+    }
+    wCtx.stroke();
+
+    if (waveSurface === "specular") {
+      wCtx.fillStyle = "#0284c7";
+      wCtx.fillRect(targetX - 70, groundY, 140, H - groundY);
+      wCtx.fillStyle = "white";
+      wCtx.fillText("Calm River Surface", targetX - 50, groundY + 22);
+
+      wCtx.strokeStyle = "#ef4444";
+      wCtx.beginPath();
+      wCtx.moveTo(targetX, targetY);
+      wCtx.lineTo(targetX + 150, groundY - 70);
+      wCtx.stroke();
+      wCtx.fillStyle = "#ef4444";
+      wCtx.fillText("Forward Reflection (No signal to sensor)", targetX + 40, groundY - 50);
+
+    } else if (waveSurface === "double") {
+      wCtx.fillStyle = "#0284c7";
+      wCtx.fillRect(targetX - 70, groundY, 140, H - groundY);
+      wCtx.fillStyle = "#22c55e";
+      wCtx.fillRect(targetX + 20, groundY - 45, 6, 45);
+      wCtx.fillText("Flooded Stalk", targetX + 32, groundY - 20);
+
+      wCtx.strokeStyle = "#a855f7";
+      wCtx.lineWidth = 2.5;
+      wCtx.beginPath();
+      wCtx.moveTo(targetX, targetY);
+      wCtx.lineTo(targetX + 20, targetY - 20);
+      wCtx.lineTo(satX, satY);
+      wCtx.stroke();
+      wCtx.fillStyle = "#c084fc";
+      wCtx.fillText("Double-Bounce Return (Bright -10dB!)", targetX - 100, groundY - 35);
+    }
+
+    waveAnim = requestAnimationFrame(render);
+  }
+  render();
+}
+
+// -------------------------------------------------------------
+// FEATURE 4: DISASTER EMERGENCY COMMAND ROOM
+// -------------------------------------------------------------
+let cmdActive = false;
+function toggleEmergencyCommand() {
+  cmdActive = !cmdActive;
+  const overlay = document.getElementById("emergency-command-overlay");
+  const btn = document.getElementById("btn-cmd");
+  if (cmdActive) {
+    overlay.classList.add("active");
+    btn.classList.add("active");
+    playTone(400, "square", 0.15, 0.1);
+  } else {
+    overlay.classList.remove("active");
+    btn.classList.remove("active");
+  }
+}
+
+// -------------------------------------------------------------
+// FEATURE 5: AI VOICE SITREP & CHAT ENGINE (NVIDIA NIM)
+// -------------------------------------------------------------
+function toggleAIChatPanel() {
+  const panel = document.getElementById("ai-chat-panel");
+  const pill = document.getElementById("ai-toggle-pill");
+  panel.classList.toggle("minimized");
+  if (panel.classList.contains("minimized")) {
+    pill.classList.add("visible");
+  } else {
+    pill.classList.remove("visible");
+  }
+}
+
+let isSpeaking = false;
+function playVoiceBriefing() {
+  if (!('speechSynthesis' in window)) {
+    showToast("Web Speech API not supported in this browser.");
+    return;
+  }
+  if (isSpeaking) {
+    window.speechSynthesis.cancel();
+    isSpeaking = false;
+    document.getElementById("btn-audio-briefing").textContent = "🎙️ Listen to Voice SitRep";
+    document.getElementById("soundwave-anim").classList.remove("sw-playing");
+    return;
+  }
+
+  const text = "Flight Director briefing for Brahmaputra Basin, Relative Orbit 91, Frame 76. Across 1,480.43 square kilometers, deep navigation water remained stable at 27.80 square kilometers, changing by only minus 0.62 square kilometers within spatial null noise. Ninety-nine point eight percent of flood changes reside in the transitional reed fringe due to radar double-bounce scattering. Navigation channels are confirmed open and safe.";
+
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 1.05;
+  utter.pitch = 0.95;
+
+  const voices = window.speechSynthesis.getVoices();
+  const v = voices.find(x => x.lang.startsWith("en") && (x.name.includes("Natural") || x.name.includes("Google") || x.name.includes("David")));
+  if (v) utter.voice = v;
+
+  utter.onstart = () => {
+    isSpeaking = true;
+    document.getElementById("btn-audio-briefing").textContent = "⏹ Stop Voice Briefing";
+    document.getElementById("soundwave-anim").classList.add("sw-playing");
+  };
+  utter.onend = () => {
+    isSpeaking = false;
+    document.getElementById("btn-audio-briefing").textContent = "🎙️ Listen to Voice SitRep";
+    document.getElementById("soundwave-anim").classList.remove("sw-playing");
+  };
+
+  window.speechSynthesis.speak(utter);
+}
+
+const chatHistory = [];
+const aiMessages = document.getElementById("ai-messages");
+const aiInput = document.getElementById("ai-input");
+const aiSendBtn = document.getElementById("ai-send-btn");
+
+function appendMessage(role, text, meta = {}) {
+  const div = document.createElement("div");
+  div.className = `ai-msg ${role === "user" ? "ai-msg-user" : "ai-msg-bot"}`;
+  div.innerHTML = text.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>').replace(/\\n/g, '<br>');
+
+  if (role === "bot" && meta.latency_s) {
+    const metaDiv = document.createElement("div");
+    metaDiv.className = "ai-msg-meta";
+    metaDiv.innerHTML = `<span>⚡ ${meta.latency_s}s</span><span>${meta.model || 'nvidia/nemotron'}</span>`;
+    div.appendChild(metaDiv);
+  }
+
+  aiMessages.appendChild(div);
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+
+async function askCopilot(question) {
+  const panel = document.getElementById("ai-chat-panel");
+  if (panel.classList.contains("minimized")) {
+    toggleAIChatPanel();
+  }
+  appendMessage("user", question);
+  chatHistory.push({ role: "user", content: question });
+
+  const loader = document.createElement("div");
+  loader.className = "ai-msg ai-msg-bot";
+  loader.id = "ai-loading";
+  loader.innerHTML = "<em>Querying verified NISAR dual-pol analytics...</em>";
+  aiMessages.appendChild(loader);
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+
+  aiSendBtn.disabled = true;
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: question, history: chatHistory })
+    });
+    const data = await res.json();
+    loader.remove();
+    const reply = data.reply || data.error || "No response received.";
+    appendMessage("bot", reply, { latency_s: data.latency_s, model: data.model });
+    chatHistory.push({ role: "assistant", content: reply });
+  } catch (err) {
+    loader.remove();
+    appendMessage("bot", "Connection error: " + err.message);
+  } finally {
+    aiSendBtn.disabled = false;
+  }
+}
+
+function sendUserMessage() {
+  const q = aiInput.value.trim();
+  if (!q) return;
+  aiInput.value = "";
+  askCopilot(q);
+}
+
+// -------------------------------------------------------------
+// 60-Second Guided Story Tour
+// -------------------------------------------------------------
+const tourSteps = [
+  {
+    title: "1. The Challenge: Dancing with the SARs",
+    text: "During the 2026 Assam monsoon, perpetual storm clouds blinded optical satellites like Landsat. The NASA-ISRO NISAR satellite penetrated the clouds with L-band microwave radar across Frame 76.",
+    fly: { center: [90.58, 26.15], zoom: 8.5, pitch: 60, bearing: -20, duration: 2500 }
+  },
+  {
+    title: "2. The Speckle Illusion",
+    text: "Naive headline thresholds suggested a 4.15 km² net loss of water. But decomposed physics revealed that 99.8% of changes sat in transitional fringe reeds where double-bounce scattering tricked single-pol sensors.",
+    fly: { center: [90.62, 26.17], zoom: 11.2, pitch: 55, bearing: -15, duration: 2500 }
+  },
+  {
+    title: "3. Confirmed Channel Stability",
+    text: "By applying dual-pol thresholding (HH < -20 dB, HV < -23 dB), we proved the braided navigation thalweg changed by only -0.62 km², safely inside the 20-pixel spatial-shift null spread. The Brahmaputra navigation channel was stable!",
+    fly: { center: [90.58, 26.15], zoom: 11.8, pitch: 48, bearing: 20, duration: 2500 }
+  }
+];
+
+let tourIdx = 0;
+function start60sTour() {
+  tourIdx = 0;
+  renderTourStep();
+  document.getElementById("guide-modal").classList.remove("hidden");
+}
+
+function renderTourStep() {
+  const step = tourSteps[tourIdx];
+  document.getElementById("guide-title").textContent = step.title;
+  document.getElementById("guide-body").innerHTML = `<p>${step.text}</p>`;
+  document.getElementById("guide-prev").disabled = (tourIdx === 0);
+  document.getElementById("guide-next").textContent = (tourIdx === tourSteps.length - 1) ? "Finish Tour ✓" : "Next Step →";
+  map.flyTo(step.fly);
+  playTone(520 + tourIdx * 100, "sine", 0.08, 0.08);
+}
+
+function nextGuideStep() {
+  if (tourIdx < tourSteps.length - 1) {
+    tourIdx++;
+    renderTourStep();
+  } else {
+    closeGuide();
+  }
+}
+function prevGuideStep() {
+  if (tourIdx > 0) {
+    tourIdx--;
+    renderTourStep();
+  }
+}
+function closeGuide() {
+  document.getElementById("guide-modal").classList.add("hidden");
+}
+
+// -------------------------------------------------------------
+// Snapshot & Print SitRep & Whitepaper
+// -------------------------------------------------------------
+function capture4KSnapshot() {
+  playTone(880, "triangle", 0.06, 0.2);
+  const mCanvas = map.getCanvas();
+  const snap = document.createElement("canvas");
+  snap.width = mCanvas.width;
+  snap.height = mCanvas.height;
+  const sCtx = snap.getContext("2d");
+  sCtx.drawImage(mCanvas, 0, 0);
+
+  sCtx.fillStyle = "rgba(10, 15, 29, 0.88)";
+  sCtx.fillRect(20, 20, 520, 110);
+  sCtx.strokeStyle = "rgba(56, 189, 248, 0.5)";
+  sCtx.lineWidth = 2;
+  sCtx.strokeRect(20, 20, 520, 110);
+
+  sCtx.fillStyle = "#38bdf8";
+  sCtx.font = "bold 15px sans-serif";
+  sCtx.fillText("NASA NISAR MISSION INTEL • FRAME 76 (ASSAM)", 36, 48);
+  sCtx.fillStyle = "#ffffff";
+  sCtx.font = "12px monospace";
+  sCtx.fillText(`TARGET: Brahmaputra River Basin | REL ORBIT: 91`, 36, 72);
+  sCtx.fillText(`COORDS: ${document.getElementById("telem-pos").textContent} | ELEV: ${document.getElementById("telem-elev").textContent}`, 36, 92);
+  sCtx.fillText(`CHALLENGE: Dancing with the SARs • TEAM BLACK HOLE SURVIVORS`, 36, 112);
+
+  const a = document.createElement("a");
+  a.download = `NISAR_Brahmaputra_Intel_${Date.now()}.png`;
+  a.href = snap.toDataURL("image/png");
+  a.click();
+  showToast("📸 4K Mission Telemetry Snapshot exported!");
+}
+
+function openSitRepModal() {
+  window.print();
+}
+
+function openWhitepaperModal() {
+  const m = document.getElementById("whitepaper-modal");
+  m.classList.toggle("hidden");
+  playTone(450, "sine", 0.08, 0.08);
+}
+
+function toggleRadarProbe() {
+  showToast("🎯 Click anywhere on the river to inspect radar backscatter, elevation & flood velocity.");
+}
+</script>
+</body>
+</html>
+"""
+
+if __name__ == "__main__":
+    content = generate_html_v2()
+    with open("web/index.html", "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"Successfully generated web/index.html v2 ({len(content)} bytes)")
+

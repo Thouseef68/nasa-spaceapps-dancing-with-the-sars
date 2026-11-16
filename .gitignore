@@ -1,0 +1,45 @@
+# NASA NISAR 3D Hydrological Digital Twin - .gitignore
+
+# -------------------------------------------------------------
+# Exclude raw multi-gigabyte satellite products (>100MB GitHub limit)
+# -------------------------------------------------------------
+data/raw/*.h5
+data/s1/
+data/processed/*.tif
+data/processed/common_valid.tif
+data/processed/*_HH_dB.tif
+data/processed/*_water.tif
+data/processed/*_new_flood.tif
+data/processed/*_receded.tif
+data/inspection_report.txt
+
+# Keep processed web rasters (under 5MB each)
+!web/layers/*.png
+!web/results.json
+!web/sweep.json
+
+# -------------------------------------------------------------
+# Python & OS Artifacts
+# -------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+.env
+.venv/
+env/
+venv/
+ENV/
+
+# Scratch & temporary inspection scripts
+tools/
+web/index_backup.html
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+
+.vercel

@@ -1,0 +1,12 @@
+# Vercel Ignore File
+data/
+tools/
+pipeline/
+server.py
+web/
+.git/
+*.h5
+*.tif
+*.zip
+*.log
+docs/

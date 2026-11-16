@@ -1,0 +1,28 @@
+{
+  "status": "blocked",
+  "step_blocked": "STEP 2: Calibrate, terrain-correct, and grid to the NISAR footprint",
+  "reason": "blocked: SNAP not available",
+  "product_id": "S1D_IW_GRDH_1SDV_20260725T120434_20260725T120459_003830_006E63_520C",
+  "acquisition_date": "2026-07-25T12:04:34Z",
+  "nisar_observation_date": "2026-07-26T12:34:22Z",
+  "offset_days": 1,
+  "comparison_type": "proxy comparison (one-day temporal offset)",
+  "s1_threshold_dB": null,
+  "s1_threshold_method": "blocked: pending SNAP terrain correction and calibration",
+  "s1_water_km2": null,
+  "metrics": {
+    "headline_vs_s1": null,
+    "core_vs_s1": null,
+    "permanent_water_agreement": null,
+    "shifted_null": null
+  },
+  "pixel_counts": null,
+  "footprint_km2": null,
+  "warnings": [
+    "Proxy comparison with Sentinel-1 acquired 2026-07-25 (one day before the NISAR observation).",
+    "OPERA DSWx-S1 returned 0 products over the AOI for 2026-07-25 to 2026-07-27.",
+    "Sentinel-1 Level-1 GRD product requires ESA SNAP gpt for calibration, thermal noise removal, Refined Lee speckle filtering, and SRTM 1-sec terrain correction to EPSG:32646 20 m grid.",
+    "ESA SNAP gpt is not installed on this system. Validation stopped at STEP 2 per protocol."
+  ],
+  "reporting_statement": "Independent validation against Sentinel-1 (acquired 2026-07-25, one day before the NISAR observation) was not completed. The Level-1 product was downloaded and verified; calibration and terrain correction were not performed, so no agreement metrics are reported. All classifications remain unvalidated."
+}

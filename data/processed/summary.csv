@@ -1,0 +1,4 @@
+scene,valid_km2,water_km2,water_pct_of_valid,water_km2_common_3scenes,water_pct_common_3scenes,water_km2_common_dual,water_pct_common_dual,new_water_vs_baseline_km2,receded_vs_baseline_km2
+baseline_jul02,1590.01,70.53,4.436,4.74,0.438,64.9,4.384,0.0,0.0
+flood_jul14,1080.63,59.95,5.548,59.95,5.548,59.95,4.05,55.88,0.67
+flood_jul26,1481.32,61.63,4.16,2.08,0.192,60.75,4.103,4.68,8.83

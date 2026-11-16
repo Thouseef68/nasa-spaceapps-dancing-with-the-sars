@@ -1,0 +1,2 @@
+threshold_HH_dB,threshold_HV_dB,baseline_water_px,baseline_water_km2,baseline_water_pct,observed_water_px,observed_water_km2,observed_water_pct,new_water_px,new_water_km2,new_water_pct,receded_water_px,receded_water_km2,receded_water_pct,net_change_px,net_change_km2,net_change_pct
+-15.0,-18.0,162248,64.9,4.38,151871,60.75,4.1,11709,4.68,0.32,22086,8.83,0.6,-10377,-4.15,-0.28
