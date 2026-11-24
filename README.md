@@ -159,7 +159,11 @@ python run_all.py
 ## 🏆 Team & Challenge Context
 
 * **Event:** NASA International Space Apps Challenge 2026
-* **Team:** **Black Hole Survivors**
+* **Team:** **Black Hole Survivors** (2-Member Team)
+* **Team Members:**
+  1. **Thouseef F** — Architecture, SAR Polarimetric Algorithms, 3D WebGL Digital Twin & AI Microservices
+  2. **Sathvik B R** — Geospatial Engineering, Hydrodynamic Validation & Morphodynamic Research
+* **Institution:** **Dayananda Sagar University (DSU)**, Bengaluru, Karnataka, India
 * **Project Team Page:** [https://www.spaceappschallenge.org/2026/find-a-team/black-hole-survivors/?tab=details](https://www.spaceappschallenge.org/2026/find-a-team/black-hole-survivors/?tab=details)
 * **Challenge:** *"Dancing with the SARs"* — Developing novel algorithms and scientific frameworks to track dynamic surface changes with multi-temporal SAR remote sensing.
 

@@ -2,6 +2,8 @@
 
 **Challenge:** Dancing with the SARs  
 **Team Name:** Black Hole Survivors  
+**Team Members:** Thouseef F & Sathvik B R  
+**Institution:** Dayananda Sagar University (DSU), Bengaluru, India  
 **Project Title:** HydroWaltz — NISAR 3D Hydrological Digital Twin & Autonomous AI Intelligence for Brahmaputra Basin Flood Dynamics  
 **Live Application URL:** https://nasa-hackathon-nisar.vercel.app  
 **Repository:** https://github.com/Thouseef68/nasa-spaceapps-dancing-with-the-sars  
